@@ -1,0 +1,9 @@
+FROM golang:1.22-alpine
+RUN adduser -D appuser
+WORKDIR /app
+COPY testapp.go .
+RUN go mod init main
+RUN go build -o /app/testapp
+USER appuser
+EXPOSE 8080
+ENTRYPOINT ["./testapp"]

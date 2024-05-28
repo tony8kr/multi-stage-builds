@@ -1,0 +1,14 @@
+FROM golang:1.22-alpine AS builder
+RUN adduser -D appuser
+WORKDIR /app
+COPY testapp.go .
+RUN go mod init main
+RUN go build -o /app/testapp
+
+FROM alpine:3.20
+WORKDIR /app
+COPY --from=builder /etc/passwd /etc/passwd
+COPY --chown=appuser --from=builder /app/testapp .
+USER appuser
+EXPOSE 8080
+ENTRYPOINT ["./testapp"]
